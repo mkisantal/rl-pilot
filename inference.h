@@ -89,6 +89,7 @@ private:
     void PreprocessImage(cv::Mat& input_image, cv::Mat& preprocessed_image);
     int GreedyActionSelection(const tensorflow::Tensor& action_distribution);
     int StochasticActionSelection(const tensorflow::Tensor& action_distribution);
+    void UpdateOnehotPrevAction(int action);
 };
 
 #endif // INFERENCE_H_

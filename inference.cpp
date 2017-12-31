@@ -191,7 +191,7 @@ int Inference::Run(std::unique_ptr<tensorflow::Session>& session){
 
     // feeding back results
     lstm_state_tensor_ = output_tensors_[2];
-    prev_action_tensor_ = output_tensors_[0]; // TODO: has to be one-hot instead
+    UpdateOnehotPrevAction(action_index);
 
     return 0;
 }
@@ -232,4 +232,19 @@ int Inference::StochasticActionSelection(const tensorflow::Tensor& action_distri
 	}
 		
 	return action_index;
+}
+
+void Inference::UpdateOnehotPrevAction(int action){
+
+	/* Feeding back latest selected action for the network as one-hot vector. */
+
+	auto prev_actions_mapped = prev_action_tensor_.tensor<float, 2>();
+	for (int i=0; i < prev_action_tensor_.NumElements(); i++){
+		if (action == i){
+			prev_actions_mapped(0, i) = 1.0f;
+		} else {
+			prev_actions_mapped(0, i) = 0.0f;
+		}
+	}
+	return;
 }
