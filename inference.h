@@ -2,6 +2,7 @@
 #define INFERENCE_H_
 
 #include <string>
+#include <random>
 
 #include <opencv2/core/core.hpp>
 
@@ -77,11 +78,17 @@ private:
     const std::string lstm_state_out_node_ = "global/Slice_1";
     std::vector<tensorflow::Tensor> output_tensors_;
 
+    // random number generation
+    std::default_random_engine generator_;
+    std::uniform_real_distribution<double> uniform_distribution_ = std::uniform_real_distribution<double>(0.0, 1.0);
+
 
     void CollectInputs(std::vector<std::pair<std::string, tensorflow::Tensor>>& input_feed);
 	void TensorInitializer(tensorflow::Tensor& tnzr, const cv::Mat& input_cv_mat);
 	void TensorInitializer(tensorflow::Tensor& tnzr, const float data);
     void PreprocessImage(cv::Mat& input_image, cv::Mat& preprocessed_image);
+    int GreedyActionSelection(const tensorflow::Tensor& action_distribution);
+    int StochasticActionSelection(const tensorflow::Tensor& action_distribution);
 };
 
 #endif // INFERENCE_H_

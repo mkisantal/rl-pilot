@@ -133,8 +133,10 @@ void Inference::CollectInputs(std::vector<std::pair<std::string, tensorflow::Ten
 
 	/* collecting the input feed for inference*/
 
-	// vector has to be empty!
-
+	if (input_feed.size() != 0){
+		input_feed.clear();
+	}
+	
 	// input image
 	PreprocessImage(latest_frame_, preprocessed_frame_);
 	TensorInitializer(image_input_tensor_, preprocessed_frame_);
@@ -183,11 +185,51 @@ int Inference::Run(std::unique_ptr<tensorflow::Session>& session){
         return -1;
     }
 
-    std::cout << output_tensors_[0].DebugString() << std::endl;	// DEBUG
+    // Action selection
+    //int action_index = GreedyActionSelection(output_tensors_[0]);
+    int action_index = StochasticActionSelection(output_tensors_[0]);
+
+    // feeding back results
+    lstm_state_tensor_ = output_tensors_[2];
+    prev_action_tensor_ = output_tensors_[0]; // TODO: has to be one-hot instead
 
     return 0;
 }
 
 void Inference::NewImageInput(cv::Mat new_frame){
 	latest_frame_ = new_frame;
+}
+
+int Inference::GreedyActionSelection(const tensorflow::Tensor& action_distribution){
+
+	/* Choosing action with the largest probability. */
+
+	int action_index = 0;
+	auto actions_mapped = action_distribution.tensor<float, 2>();
+
+	for (int i=1; i < action_distribution.NumElements(); i++){
+		if (actions_mapped(0, i) > actions_mapped(0, action_index)){
+			action_index = i;
+		}
+	}
+
+	return action_index;
+}
+
+int Inference::StochasticActionSelection(const tensorflow::Tensor& action_distribution){
+	
+	/* Choosing action according to action probability distribution. */
+
+	double random_double = uniform_distribution_(generator_);
+
+	int action_index = 0;
+	auto actions_mapped = action_distribution.tensor<float, 2>();
+	double cumulative_prop = actions_mapped(0, 0);
+
+	while(random_double > cumulative_prop){
+		action_index += 1;
+		cumulative_prop += actions_mapped(0, action_index);
+	}
+		
+	return action_index;
 }
