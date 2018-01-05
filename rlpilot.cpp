@@ -12,6 +12,8 @@ int main(void){
 	std::cout << "--- cam init done" << std::endl;
 	pilot.cam.Start();
 	std::cout << "--- pilot cam start" << std::endl;
+	//pilot.link.InitDataLink(); // TODO
+	std::cout << "--- datalink initialized" << std::endl;
 
 	std::unique_ptr<tensorflow::Session> session;
 	pilot.inference.Init(&session);
@@ -28,14 +30,18 @@ int main(void){
 
 		start = std::clock();
 
-		//cv::namedWindow("Results", CV_WINDOW_AUTOSIZE);
 		pilot.cam.WaitForImage();
+		//pilot.link.GetMeasurements();  // TODO
 		cv::imshow("Results", pilot.cam.GetLatestFrame());
 		pilot.inference.NewImageInput(pilot.cam.GetLatestFrame());
-		pilot.inference.Run(session);
+		pilot.inference.NewPprzInputs(0.0f, 0.0f);
+		int action = pilot.inference.Run(session); // get command
+		std::cout << "selected action:  [" << action << "]" << std::endl;
+		// pilot.link.GiveCommand();	 // TODO
 
 		loop = (cv::waitKey(1) == -1);
 
+		// measuring avg FPS
 		double duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
 		std::cout << "Done in " << duration  << " seconds." << std::endl;
 		counter += 1;

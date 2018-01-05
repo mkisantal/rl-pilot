@@ -193,11 +193,16 @@ int Inference::Run(std::unique_ptr<tensorflow::Session>& session){
     lstm_state_tensor_ = output_tensors_[2];
     UpdateOnehotPrevAction(action_index);
 
-    return 0;
+    return action_index;
 }
 
 void Inference::NewImageInput(cv::Mat new_frame){
 	latest_frame_ = new_frame;
+}
+
+void Inference::NewPprzInputs(float heading, float psi_dot){
+	latest_velocity_ = psi_dot; // units? should give deg/sec?
+	latest_hdg_error_ = heading; // calculate error here!
 }
 
 int Inference::GreedyActionSelection(const tensorflow::Tensor& action_distribution){

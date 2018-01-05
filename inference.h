@@ -36,6 +36,7 @@ public:
 	int Init(std::unique_ptr<tensorflow::Session>* session);
 	int Run(std::unique_ptr<tensorflow::Session>& session);
 	void NewImageInput(cv::Mat new_frame);
+    void NewPprzInputs(float heading, float psi_dot);
 
 private:
 
