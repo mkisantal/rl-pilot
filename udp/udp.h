@@ -28,6 +28,10 @@
 #ifndef MCU_PERIPH_UDP_H
 #define MCU_PERIPH_UDP_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "std.h"
 #include "udp_arch.h"
 #include "pprzlink/pprzlink_device.h"
@@ -71,11 +75,11 @@ extern struct udp_periph udp0;
 #endif
 
 #ifndef UDP0_PORT_OUT
-#define UDP0_PORT_OUT 4242
+#define UDP0_PORT_OUT 4244
 #endif
 
 #ifndef UDP0_PORT_IN
-#define UDP0_PORT_IN 4243
+#define UDP0_PORT_IN 4245
 #endif
 
 #ifndef UDP0_BROADCAST
@@ -128,5 +132,10 @@ extern struct udp_periph udp2;
 
 #define UDP2Init() udp_periph_init(&udp2, STRINGIFY(UDP2_HOST), UDP2_PORT_OUT, UDP2_PORT_IN, UDP2_BROADCAST)
 #endif // USE_UDP2
+
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif /* MCU_PERIPH_UDP_H */
