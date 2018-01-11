@@ -53,6 +53,7 @@ void DataLink::GiveCommand(int action){
 
     send_lock.lock();	// TODO: a message has to be defined in pprzlink!!!
   	pprz_msg_send_PAYLOAD(&(trans.trans_tx), &(udp0.device), 3, sizeof(SlamDunk2PPRZPackage),s2p_package.buf);  	
+  	std::cout << "sent message" <<std::endl;
   	send_lock.unlock();
 
 }

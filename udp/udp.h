@@ -71,7 +71,7 @@ extern void     udp_put_buffer(struct udp_periph *p, long fd, const uint8_t *dat
 extern struct udp_periph udp0;
 
 #ifndef UDP0_HOST
-#define UDP0_HOST 127.0.0.1
+#define UDP0_HOST 192.168.42.255
 #endif
 
 #ifndef UDP0_PORT_OUT
