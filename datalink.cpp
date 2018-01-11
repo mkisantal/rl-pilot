@@ -26,7 +26,7 @@ void DataLink::GetMeasurements(float *heading, float *psi_dot){
 		pprz_check_and_parse(&(udp0.device),&trans,buffer,&msg_available);
 
   		if (msg_available) {
-  			//std::cout << "Received message!" << std::endl;
+  			std::cout << "Received message!" << std::endl;
     		unsigned char * tmp = (unsigned char *) &p2s_package;
     		for(unsigned int i=0; i<sizeof(struct PPRZ2SlamDunkPackage);i++) {
       			tmp[i] = buffer[i+3];	//TODO!!!! offset
@@ -64,7 +64,7 @@ int DataLink::InitDataLink(){
 	std::cout << "InitDataLink" << std::endl;
 
 	pprz_transport_init(&trans);
-	UDP0Init();
+	udp_arch_init();
 
 	return 0;
 }

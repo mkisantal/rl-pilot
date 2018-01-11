@@ -96,7 +96,6 @@ uint16_t udp_char_available(struct udp_periph *p)
  */
 uint8_t udp_getch(struct udp_periph *p)
 {
-  printf("Byte");
   pthread_mutex_lock(&udp_mutex);
   uint8_t ret = p->rx_buf[p->rx_extract_idx];
   p->rx_extract_idx = (p->rx_extract_idx + 1) % UDP_RX_BUFFER_SIZE;
