@@ -3,7 +3,7 @@ project(rl-pilot)
 find_package( CUDA REQUIRED )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11  -Wall -Wextra -fPIC")
-# set (PPRZLINK_INCL_DIR ./pprzlink/var/include/)
+set (PPRZLINK_INCL_DIR ./pprzlink/var/include/)
 
 
 include_directories(./../tensorflow)
@@ -12,10 +12,12 @@ include_directories(./../tensorflow/bazel-tensorflow/external/eigen_archive/eige
 include_directories(./../tensorflow/bazel-genfiles)
 include_directories(/usr/local/lib/python3.5/dist-packages/tensorflow/include/external/nsync/public/)
 include_directories(/usr/local/cuda/lib/)
-# include_directories("${PPRZLINK_INCL_DIR}")
+include_directories("${PPRZLINK_INCL_DIR}")
+include_directories(./udp)
 
-# FILE(GLOB PPRZLINK_SRC_FILES "./pprzlink/var/share/pprzlink/src/pprz_transport.c")
-add_executable(test datalink.cpp rlpilot.cpp inference.cpp slamdunk_capture.cpp)  # $ pprz.cpp {PPRZLINK_SRC_FILES}
+FILE(GLOB PPRZLINK_SRC_FILES "./pprzlink/var/share/pprzlink/src/pprz_transport.c")
+FILE(GLOB UDP_SRC_FILES "./udp/*.*")
+add_executable(test ${UDP_SRC_FILES}  rlpilot.cpp inference.cpp slamdunk_capture.cpp  ${PPRZLINK_SRC_FILES} datalink.cpp)  #
 
 
 # link_directories(${CUDA_LIBRARIES})

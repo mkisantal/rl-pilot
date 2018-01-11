@@ -12,7 +12,7 @@ int main(void){
 	std::cout << "--- cam init done" << std::endl;
 	pilot.cam.Start();
 	std::cout << "--- pilot cam start" << std::endl;
-	//pilot.link.InitDataLink(); // TODO
+	pilot.link.InitDataLink(); // TODO
 	std::cout << "--- datalink initialized" << std::endl;
 
 	std::unique_ptr<tensorflow::Session> session;
@@ -31,13 +31,14 @@ int main(void){
 		start = std::clock();
 
 		pilot.cam.WaitForImage();
-		//pilot.link.GetMeasurements();  // TODO
+		float heading, psi_dot;
+		pilot.link.GetMeasurements(&heading, &psi_dot);
 		cv::imshow("Results", pilot.cam.GetLatestFrame());
 		pilot.inference.NewImageInput(pilot.cam.GetLatestFrame());
-		pilot.inference.NewPprzInputs(0.0f, 0.0f);
-		int action = pilot.inference.Run(session); // get command
+		pilot.inference.NewPprzInputs(heading, psi_dot);
+		int action = pilot.inference.Run(session);
 		std::cout << "selected action:  [" << action << "]" << std::endl;
-		// pilot.link.GiveCommand();	 // TODO
+		pilot.link.GiveCommand(action);
 
 		loop = (cv::waitKey(1) == -1);
 
